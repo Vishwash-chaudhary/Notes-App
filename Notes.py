@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, simpledialog, messagebox
 
 BG_COLOR = "#0F172A"
 FG_COLOR = "#F8FAFC"
@@ -20,12 +20,17 @@ def new_note():
     button_frame = Frame(root, bg=BG_COLOR)
     button_frame.pack(pady=18)
     ok_button = Button(button_frame, text="OK", font=("Cambria", 16),
-                        bg=ACCENT_COLOR, fg=BG_COLOR,)
+                        bg=ACCENT_COLOR, fg=BG_COLOR,command=lambda: [root.destroy(), create_note()])
     ok_button.pack(side=LEFT, padx=20)
     cancel_button = Button(button_frame, text="Cancel", font=("Cambria", 16),
-                            bg=ACCENT_COLOR, fg=BG_COLOR,)
+                            bg=ACCENT_COLOR, fg=BG_COLOR,command=lambda: root.destroy())
     cancel_button.pack(side=RIGHT, padx=20)
     root.resizable(False, False)
+    pass
+
+def create_note():
+    initial_label.pack_forget()
+    
     pass
 
 
@@ -36,10 +41,15 @@ root.resizable(False, False)
 root.iconbitmap("notes.ico")
 root.config(bg=BG_COLOR)
 
+root.grid_columnconfigure(2, weight=1)
+right_frame = Frame(root, bg=BG_COLOR)
+right_frame.grid(row=0, column=2, rowspan=4, sticky="nsew")
+
 title_label = Label(root, text="Notes", font=("Cambria", 32), bg=BG_COLOR, fg=ACCENT_COLOR)
 title_label.grid(row=0, column=0, padx=20, pady=20)
 
-new_note_button = Button(root, text="New Note", font=("Cambria", 16), bg=ACCENT_COLOR, fg=BG_COLOR,command=lambda: new_note())
+new_note_button = Button(root, text="New Note", font=("Cambria", 16), bg=ACCENT_COLOR,
+                          fg=BG_COLOR,command=lambda: new_note())
 new_note_button.grid(row=1, column=0, padx=20, pady=10)
 
 partition_below_nnb = ttk.Separator(root, orient='horizontal')
@@ -50,7 +60,7 @@ root.grid_rowconfigure(3, weight=1)
 partition = ttk.Separator(root, orient='vertical')
 partition.grid(row=0, column=1,rowspan=4, sticky="ns", padx=10, pady=10)
 
-initial_label = Label(root, text="Select a note or Start Fresh", font=("Cambria", 16), bg=BG_COLOR, fg=FG_COLOR)
-initial_label.place(relx=0.68, rely=0.5, anchor="center")
+initial_label = Label(right_frame, text="Select a note or Start Fresh", font=("Cambria", 16), bg=BG_COLOR, fg=FG_COLOR)
+initial_label.pack(anchor="center", expand=True)
 
 root.mainloop()
