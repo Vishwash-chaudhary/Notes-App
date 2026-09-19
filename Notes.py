@@ -20,7 +20,8 @@ def new_note():
     button_frame = Frame(root, bg=BG_COLOR)
     button_frame.pack(pady=18)
     ok_button = Button(button_frame, text="OK", font=("Cambria", 16),
-                        bg=ACCENT_COLOR, fg=BG_COLOR,command=lambda: [root.destroy(), create_note()])
+                        bg=ACCENT_COLOR, fg=BG_COLOR,
+                        command=lambda: [create_note(input_entry.get()), root.destroy()])
     ok_button.pack(side=LEFT, padx=20)
     cancel_button = Button(button_frame, text="Cancel", font=("Cambria", 16),
                             bg=ACCENT_COLOR, fg=BG_COLOR,command=lambda: root.destroy())
@@ -28,8 +29,17 @@ def new_note():
     root.resizable(False, False)
     pass
 
-def create_note():
+def create_note(Title):
+    if Title=="":
+        messagebox.showerror("Error", "Title cannot be empty.")
+        return
+
     initial_label.pack_forget()
+    note_title=Label(right_frame, text=Title, font=("Cambria", 20), bg=BG_COLOR, fg=ACCENT_COLOR)
+    note_title.pack(anchor="nw", padx=20, pady=20)
+    text_area = Text(right_frame, font=("Cambria", 14), bg=SURFACE_COLOR, fg=FG_COLOR,
+                      insertbackground=FG_COLOR, wrap="word", bd=0, highlightthickness=0)
+    text_area.pack(fill="both", expand=True, padx=20, pady=(20,40))
     
     pass
 
@@ -45,6 +55,7 @@ root.grid_columnconfigure(2, weight=1)
 right_frame = Frame(root, bg=BG_COLOR)
 right_frame.grid(row=0, column=2, rowspan=4, sticky="nsew")
 
+
 title_label = Label(root, text="Notes", font=("Cambria", 32), bg=BG_COLOR, fg=ACCENT_COLOR)
 title_label.grid(row=0, column=0, padx=20, pady=20)
 
@@ -52,8 +63,8 @@ new_note_button = Button(root, text="New Note", font=("Cambria", 16), bg=ACCENT_
                           fg=BG_COLOR,command=lambda: new_note())
 new_note_button.grid(row=1, column=0, padx=20, pady=10)
 
-partition_below_nnb = ttk.Separator(root, orient='horizontal')
-partition_below_nnb.grid(row=2, column=0, sticky="ew", padx=10, pady=10)
+# partition_below_nnb = ttk.Separator(root, orient='horizontal')
+# partition_below_nnb.grid(row=2, column=0, sticky="ew", padx=10, pady=10)
 
 root.grid_rowconfigure(3, weight=1)
 
