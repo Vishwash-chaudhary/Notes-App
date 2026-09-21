@@ -71,22 +71,24 @@ def create_note(Title):
 def save_note(title, content):
     collection.update_one({"title": title}, {"$set": {"content": content}}, upsert=True)
     # print(f"Saving note: {title} with content: {content}")
-    messagebox.showinfo("Saved", f"Note '{title}' has been saved.")
 
+    messagebox.showinfo("Saved", f"Note '{title}' has been saved.")
     pass
 
 def delete_note(title):
     collection.delete_one({"title": title})
     # print(f"Deleting note: {title}")
-    messagebox.showinfo("Deleted", f"Note '{title}' has been deleted.")
-
-    for widget in right_frame.winfo_children():
-        widget.destroy()
-    initial_label.pack(anchor="center", expand=True)
+    if messagebox.askyesno("Delete", f"Are you sure you want to delete the note '{title}'?"):
+        messagebox.showinfo("Deleted", f"Note '{title}' has been deleted.")
+        notes_listbox.delete(notes_listbox.get(0, END).index(title))
+        collection.delete_one({"title": title})
+        for widget in right_frame.winfo_children():
+            widget.destroy()
+        initial_label.pack(anchor="center", expand=True)
 
     pass
 
-def list_click(event,):
+def list_click(event):
     selected_index = notes_listbox.curselection()
     if selected_index:
         selected_title = notes_listbox.get(selected_index)
