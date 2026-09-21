@@ -18,6 +18,12 @@ client = MongoClient(MONGO_URI)
 db = client[DB_NAME]
 collection = db[COLLECTION_NAME]
 
+def Load_notes(notes_listbox):
+    notes = collection.find()
+    for note in notes:
+        notes_listbox.insert(END, note["title"])
+    pass
+
 def new_note():
     root = Tk()
     root.title("New Note")
@@ -84,7 +90,9 @@ def delete_note(title):
         collection.delete_one({"title": title})
         for widget in right_frame.winfo_children():
             widget.destroy()
-        initial_label.pack(anchor="center", expand=True)
+        new_initial_label = Label(right_frame, text="Select a note or Start Fresh", font=("Cambria", 16),
+                       bg=BG_COLOR, fg=FG_COLOR)
+        new_initial_label.pack(anchor="center", expand=True)
 
     pass
 
@@ -108,10 +116,12 @@ def list_click(event):
                           bg=Danger_COLOR, fg=BG_COLOR,
                           command=lambda: delete_note(selected_title))
         del_button.pack(side=RIGHT, padx=20, pady=10)
+        note = collection.find_one({"title": selected_title})
         text_area = Text(right_frame, font=("Cambria", 14), bg=SURFACE_COLOR, fg=FG_COLOR,
                           insertbackground=FG_COLOR, wrap="word", bd=0, highlightthickness=0)
         text_area.pack(fill="both", expand=True, padx=20, pady=(20,40))
-
+        if note and "content" in note:
+            text_area.insert("1.0", note["content"])
     pass
 
 root = Tk()
@@ -121,6 +131,7 @@ root.resizable(False, False)
 root.iconbitmap("notes.ico")
 root.config(bg=BG_COLOR)
 
+
 root.grid_columnconfigure(2, weight=1)
 right_frame = Frame(root, bg=BG_COLOR)
 right_frame.grid(row=0, column=2, rowspan=4, sticky="nsew")
@@ -129,6 +140,8 @@ notes_listbox = Listbox(root, font=("Cambria", 14), bg=SURFACE_COLOR, fg=FG_COLO
                       selectbackground=ACCENT_COLOR, selectforeground=BG_COLOR)
 notes_listbox.grid(row=2, column=0, rowspan=2, sticky="nsew", padx=20, pady=20)
 notes_listbox.bind("<<ListboxSelect>>", list_click)
+
+Load_notes(notes_listbox)
 
 title_label = Label(root, text="Notes", font=("Cambria", 32), bg=BG_COLOR, fg=ACCENT_COLOR)
 title_label.grid(row=0, column=0, padx=20, pady=20)
@@ -142,7 +155,8 @@ root.grid_rowconfigure(3, weight=1)
 partition = ttk.Separator(root, orient='vertical')
 partition.grid(row=0, column=1,rowspan=4, sticky="ns", pady=10)
 
-initial_label = Label(right_frame, text="Select a note or Start Fresh", font=("Cambria", 16), bg=BG_COLOR, fg=FG_COLOR)
+initial_label = Label(right_frame, text="Select a note or Start Fresh", font=("Cambria", 16),
+                       bg=BG_COLOR, fg=FG_COLOR)
 initial_label.pack(anchor="center", expand=True)
 
 root.mainloop()
