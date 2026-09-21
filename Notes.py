@@ -89,23 +89,23 @@ def delete_note(title):
 def list_click(event,):
     selected_index = notes_listbox.curselection()
     if selected_index:
-        # sav_del_frame = Frame(right_frame, bg=BG_COLOR)
-        # sav_del_frame.pack(padx=20, pady=(0,0))
-
-        # save_button = Button(sav_del_frame, text="Save", font=("Cambria", 16),
-        #                   bg=ACCENT_COLOR, fg=BG_COLOR,
-        #                   command=lambda: save_note(Title, text_area.get("1.0", END)))
-        # save_button.pack(side=LEFT, padx=20, pady=10)
-
-        # del_button = Button(sav_del_frame, text="Delete", font=("Cambria", 16),
-        #                   bg=Danger_COLOR, fg=BG_COLOR,
-        #                   command=lambda: delete_note(Title))
-        # del_button.pack(side=RIGHT, padx=20, pady=10)
         selected_title = notes_listbox.get(selected_index)
         for widget in right_frame.winfo_children():
             widget.destroy()
         note_title=Label(right_frame, text=selected_title, font=("Cambria", 22), bg=BG_COLOR, fg=ACCENT_COLOR)
         note_title.pack(anchor="nw", padx=20, pady=(20,10))
+        sav_del_frame = Frame(right_frame, bg=BG_COLOR)
+        sav_del_frame.pack(padx=20, pady=(0,0))
+
+        save_button = Button(sav_del_frame, text="Save", font=("Cambria", 16),
+                          bg=ACCENT_COLOR, fg=BG_COLOR,
+                          command=lambda: save_note(selected_title, text_area.get("1.0", END)))
+        save_button.pack(side=LEFT, padx=20, pady=10)
+
+        del_button = Button(sav_del_frame, text="Delete", font=("Cambria", 16),
+                          bg=Danger_COLOR, fg=BG_COLOR,
+                          command=lambda: delete_note(selected_title))
+        del_button.pack(side=RIGHT, padx=20, pady=10)
         text_area = Text(right_frame, font=("Cambria", 14), bg=SURFACE_COLOR, fg=FG_COLOR,
                           insertbackground=FG_COLOR, wrap="word", bd=0, highlightthickness=0)
         text_area.pack(fill="both", expand=True, padx=20, pady=(20,40))
